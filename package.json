@@ -1,0 +1,25 @@
+{
+  "name": "norajs",
+  "version": "1.0.0",
+  "description": "Simple & Sweet services",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:dwelch2344/norajs.git"
+  },
+  "author": "david@davidwelch.co",
+  "license": "ISC",
+  "homepage": "http://davidwelch.co",
+  "dependencies": {
+    "body-parser": "~1.17.1",
+    "cookie-parser": "~1.4.3",
+    "express": "^4.15.4",
+    "express-promise-router": "^2.0.0",
+    "serve-favicon": "~2.4.2",
+    "stylus": "^0.54.5",
+    "tracer": "^0.8.11"
+  }
+}
