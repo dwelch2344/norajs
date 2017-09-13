@@ -70,7 +70,7 @@ function defaultExecutor(server){
 
   if( server.config.nora.autoscan === true ){
     server.addConfig(new ScanningConfig())
-    server.logger.info('Configured autoscanning')
+    server.logger.trace('Configured autoscanning')
   }
 
   const { config, configs, sorter, logger } = server
@@ -107,7 +107,7 @@ function defaultExecutor(server){
   
   // let's listen
   app.listen(config.port)
-  this.logger.info('Listening on port', config.port)
+  this.logger.trace('Listening on port', config.port)
 }
 
 module.exports = Server

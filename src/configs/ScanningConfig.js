@@ -20,7 +20,7 @@ class ScanningConfig extends Configuration {
 
   scan(type, path, instanceType, action){
     if (fs.existsSync(path)) {
-      this.logger.info(`Scanning for ${type} instances in ${path}...`)
+      this.logger.trace(`Scanning for ${type} instances in ${path}...`)
       const instances = fs.readdirSync(path)
                          .filter( f => f.endsWith('.js'))
                          .map( f => require(path + '/' + f) )
@@ -30,7 +30,7 @@ class ScanningConfig extends Configuration {
       if( matches.length !== instances.length ){
         this.logger.warn(`Found ${instances.length} files in ${path}, but only ${matches.length} matches`)
       }else{
-        this.logger.info(`Configured ${instances.length} ${type} instances`)
+        this.logger.trace(`Configured ${instances.length} ${type} instances`)
       }
     }else{
       this.logger.warn(`Could not find path for ${type} instances in ${path}`)
