@@ -1,4 +1,4 @@
-# Nora.js
+# Nora.js [![Build Status](https://travis-ci.org/dwelch2344/norajs.svg?branch=master)](https://travis-ci.org/dwelch2344/norajs)
 #### Sweet, simple express services
 
 A sweet, simple, express-oriented framework for quickly hammering out ES7-style services. Convention over configuration, 
