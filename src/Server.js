@@ -38,15 +38,19 @@ class Server {
 
   express(){
     this.app = express()
-    this.configureExpress(this.app)
+    this.preConfigureExpress(this.app)
     return this.app
   }
 
-  configureExpress(app){
+  preConfigureExpress(app){
     // hook for extension
   }
 
-  start(){
+  postConfigureExpress(app){
+    // hook for extension
+  }
+
+  start(){    
     this.config.executor(this)
   }
 
@@ -63,7 +67,7 @@ class Server {
   } 
 }
 
-function defaultExecutor(server){
+async function defaultExecutor(server){
 
   // everything centers around express, so wire him up first
   const app = server.express()
@@ -73,20 +77,32 @@ function defaultExecutor(server){
     server.logger.trace('Configured autoscanning')
   }
 
-  const { config, configs, sorter, logger } = server
+  const { config, sorter, logger } = server    
 
-  // register everything, making it discoverable
+  let configs = server.configs
+  let visited = []
   
-  
-  // initialize configs first, in case they instantiate services
-  configs.sort(sorter).forEach( (cfg, idx) => {
-    cfg.logger = logger
-    cfg.preConfigure(server, config, idx)
-  })
+  // initialize configs first, in case they instantiate services or other configs
+  configs.sort(sorter)
+  do { 
+    for(let idx in configs){
+      let cfg = configs[idx]
+      if( visited.indexOf(cfg) < 0 ){
+        cfg.logger = logger
+        await cfg.preConfigure(server, config, idx)
+        visited.push(cfg)
+      }else{
+        this.logger.trace('Already configured', cfg.constructor.name)
+      }
+    }
+  }while(configs.length > visited.length)
 
-  // now configure services
+
+  // register everything, making it discoverable  
   const { services } = server   
-  services.sort(sorter).forEach( (service, idx) => {
+  services.sort(sorter)
+  for(let idx in services){
+    let service = services[idx]
     const name = service.identity()
     if( name ){
       if( server.named[name] !== undefined ){
@@ -94,18 +110,23 @@ function defaultExecutor(server){
       }
       server.named[name] = service
     }
-  })
-  services.sort(sorter).forEach( (svc, idx) => {
-    svc.logger = logger
-    svc.configure(server, config, idx)
-  })
+  }
 
   // post configure configs 
-  configs.sort(sorter).forEach( (cfg, idx) => {
-    cfg.postConfigure(server, config, idx)
-  })
+  for(let idx in configs){
+    let cfg = configs[idx]
+    await cfg.postConfigure(server, config, idx)
+  }
+
+  // now configure services
+  for(let idx in services){
+    let svc = services[idx]
+    svc.logger = logger
+    await svc.configure(server, config, idx)
+  }
   
   // let's listen
+  server.postConfigureExpress(app)
   app.listen(config.port)
   this.logger.trace('Listening on port', config.port)
 }
