@@ -51,7 +51,7 @@ class Server {
   }
 
   start(){    
-    this.config.executor(this)
+    return this.config.executor(this)
   }
 
   addConfig(config){
