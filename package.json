@@ -1,6 +1,6 @@
 {
   "name": "norajs",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Simple & Sweet services",
   "main": "index.js",
   "scripts": {
